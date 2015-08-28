@@ -3,4 +3,10 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="no_trainees">no trainees</string>
+    <string name="name_hint">name</string>
+    <string name="surname_hint">surname</string>
+    <string name="confirm_button">confirm</string>
+    <string name="trainee_delete">Delete Trainee</string>
+    <string name="new_trainee_button">New Trainee</string>
 </resources>

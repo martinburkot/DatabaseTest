@@ -16,6 +16,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
+
+        <activity
+            android:name=".TraineeDetailActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize" >
+        </activity>
+
+        <provider
+                android:name=".MyContentProvider"
+                android:authorities="com.example.medwed.databasetest.contentprovider" >
+        </provider>
+
+</application>
 
 </manifest>
