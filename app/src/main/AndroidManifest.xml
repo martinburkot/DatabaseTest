@@ -8,7 +8,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".MainActivity"
+            android:name=".TraineesListActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,6 +20,18 @@
         <activity
             android:name=".TraineeDetailActivity"
             android:windowSoftInputMode="stateVisible|adjustResize" >
+        </activity>
+
+        <activity
+            android:name=".TrainingListActivity" >
+        </activity>
+
+        <activity
+            android:name=".TrainingDetailActivity" >
+        </activity>
+
+        <activity
+            android:name=".AttendedListActivity" >
         </activity>
 
         <provider

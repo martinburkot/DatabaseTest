@@ -8,7 +8,7 @@ public class TheBookDatabase extends SQLiteOpenHelper {
 
 
     private static final String DATABASE_NAME = "thebook.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 5;
 
     public TheBookDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -17,7 +17,11 @@ public class TheBookDatabase extends SQLiteOpenHelper {
     // Method is called during creation of the database
     @Override
     public void onCreate(SQLiteDatabase database) {
+
         TraineeTable.onCreate(database);
+        TrainingsTable.onCreate(database);
+        AttendeesTable.onCreate(database);
+        AttendedSQLView.onCreate(database);
     }
 
     // Method is called during an upgrade of the database,
@@ -26,6 +30,9 @@ public class TheBookDatabase extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase database, int oldVersion,
                           int newVersion) {
         TraineeTable.onUpgrade(database, oldVersion, newVersion);
+        TrainingsTable.onUpgrade(database, oldVersion, newVersion);
+        AttendeesTable.onUpgrade(database, oldVersion, newVersion);
+        AttendedSQLView.onUpgrade(database, oldVersion, newVersion);
     }
 
 

@@ -3,52 +3,63 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
+    <EditText
+        android:id="@+id/trainings_max_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+    </EditText>
 
     <EditText
-        android:id="@+id/trainee_edit_name"
+        android:id="@+id/trainings_edit_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:hint="@string/name_hint"
+        android:hint="@string/trainings_edit_date"
         android:imeOptions="actionNext" >
     </EditText>
 
     <EditText
-        android:id="@+id/trainee_edit_surname"
+        android:id="@+id/trainings_edit_income"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="top"
-        android:hint="@string/surname_hint"
         android:imeOptions="actionNext" >
     </EditText>
 
     <EditText
-        android:id="@+id/trainee_edit_birthday"
+        android:id="@+id/trainings_edit_expenses"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="top"
-        android:hint="@string/trainee_birthday"
         android:imeOptions="actionNext" >
     </EditText>
 
     <EditText
-        android:id="@+id/trainee_edit_weight"
+        android:id="@+id/trainings_edit_total"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="top"
-        android:hint="@string/trainee_weight"
         android:imeOptions="actionNext" >
     </EditText>
 
 
     <Button
-        android:id="@+id/todo_edit_button"
+        android:id="@+id/trainings_edit_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/confirm_button" >
+    </Button>
+
+    <Button
+        android:id="@+id/trainings_add_attendants_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="showAttendees"
+        android:text="@string/add_attendants" >
     </Button>
 
 </LinearLayout> 

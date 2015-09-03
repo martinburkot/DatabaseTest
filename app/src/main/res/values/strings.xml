@@ -9,4 +9,13 @@
     <string name="confirm_button">confirm</string>
     <string name="trainee_delete">Delete Trainee</string>
     <string name="new_trainee_button">New Trainee</string>
+    <string name="trainee_birthday">Birthday</string>
+    <string name="trainee_weight">Weight</string>
+    <string name="menu_edit">Edit</string>
+    <string name="new_training_button">New Training</string>
+    <string name="trainings_edit_date">Date</string>
+    <string name="show_trainings_button">Show Trainings</string>
+    <string name="fill_date_waring">Fill date</string>
+    <string name="accept_select">Accept select</string>
+    <string name="add_attendants">Add Attendees</string>
 </resources>
