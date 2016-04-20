@@ -1,6 +1,4 @@
 package com.example.medwed.databasetest;
-import java.util.Arrays;
-import java.util.HashSet;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -72,23 +70,23 @@ public class MyContentProvider extends ContentProvider {
         int uriType = sURIMatcher.match(uri);
         switch (uriType) {
             case ALL_TRAINEES:
-                queryBuilder.setTables(TraineeTable.TABLE_TRAINEE);
+                queryBuilder.setTables(TraineeTable.TABLE);
                 break;
             case ONE_TRAINEE:
                 // set table
-                queryBuilder.setTables(TraineeTable.TABLE_TRAINEE);
+                queryBuilder.setTables(TraineeTable.TABLE);
                 // adding the ID to the original query
-                queryBuilder.appendWhere(TraineeTable.COLUMN_ID + "="
+                queryBuilder.appendWhere(TraineeTable._ID + "="
                         + uri.getLastPathSegment());
                 break;
             case ALL_TRAININGS:
-                queryBuilder.setTables(TrainingsTable.TABLE_TRAININGS);
+                queryBuilder.setTables(TrainingsTable.TABLE);
                 break;
             case ONE_TRAINING:
                 // set table
-                queryBuilder.setTables(TrainingsTable.TABLE_TRAININGS);
+                queryBuilder.setTables(TrainingsTable.TABLE);
                 // adding the ID to the original query
-                queryBuilder.appendWhere(TrainingsTable.COLUMN_ID + "="
+                queryBuilder.appendWhere(TrainingsTable._ID + "="
                         + uri.getLastPathSegment());
                 break;
             case ALL_ATTENDED:
@@ -121,15 +119,15 @@ public class MyContentProvider extends ContentProvider {
         long id;
         switch (uriType) {
             case ALL_TRAINEES:
-                id = sqlDB.insert(TraineeTable.TABLE_TRAINEE, null, values);
+                id = sqlDB.insert(TraineeTable.TABLE, null, values);
                 newUri = ContentUris.withAppendedId(TRAINEES_URI, id);
                 break;
             case ALL_TRAININGS:
-                id = sqlDB.insert(TrainingsTable.TABLE_TRAININGS, null, values);
+                id = sqlDB.insert(TrainingsTable.TABLE, null, values);
                 newUri = ContentUris.withAppendedId(TRAININGS_URI, id);
                 break;
             case ALL_ATTENDED:
-                id = sqlDB.insert(AttendeesTable.TABLE_ATTENDEES, null, values);
+                id = sqlDB.insert(AttendeesTable.TABLE, null, values);
                 newUri = ContentUris.withAppendedId(ATTENDEE_URI, id);
                 break;
             default:
@@ -143,23 +141,37 @@ public class MyContentProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        int uriType = sURIMatcher.match(uri);
+        int uriType = sURIMatcher.match(uri);// todo user content resolver to delete (if possible)
         SQLiteDatabase sqlDB = database.getWritableDatabase();
         int rowsDeleted;
+        String id;
         switch (uriType) {
             case ALL_TRAINEES:
-                rowsDeleted = sqlDB.delete(TraineeTable.TABLE_TRAINEE, selection,
+                rowsDeleted = sqlDB.delete(TraineeTable.TABLE, selection,
                         selectionArgs);
                 break;
             case ONE_TRAINEE:
-                String id = uri.getLastPathSegment();
+                id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection)) {
-                    rowsDeleted = sqlDB.delete(TraineeTable.TABLE_TRAINEE,
-                            TraineeTable.COLUMN_ID + "=" + id,
+                    rowsDeleted = sqlDB.delete(TraineeTable.TABLE,
+                            TraineeTable._ID + "=" + id,
                             null);
                 } else {
-                    rowsDeleted = sqlDB.delete(TraineeTable.TABLE_TRAINEE,
-                            TraineeTable.COLUMN_ID + "=" + id
+                    rowsDeleted = sqlDB.delete(TraineeTable.TABLE,
+                            TraineeTable._ID + "=" + id
+                                    + " and " + selection,
+                            selectionArgs);
+                }
+                break;
+            case ONE_TRAINING:
+                id = uri.getLastPathSegment();
+                if (TextUtils.isEmpty(selection)) {
+                    rowsDeleted = sqlDB.delete(TrainingsTable.TABLE,
+                            TrainingsTable._ID + "=" + id,
+                            null);
+                } else {
+                    rowsDeleted = sqlDB.delete(TrainingsTable.TABLE,
+                            TraineeTable._ID + "=" + id
                                     + " and " + selection,
                             selectionArgs);
                 }
@@ -181,7 +193,7 @@ public class MyContentProvider extends ContentProvider {
         String id;
         switch (uriType) {
             case ALL_TRAINEES:
-                rowsUpdated = sqlDB.update(TraineeTable.TABLE_TRAINEE,
+                rowsUpdated = sqlDB.update(TraineeTable.TABLE,
                         values,
                         selection,
                         selectionArgs);
@@ -189,21 +201,21 @@ public class MyContentProvider extends ContentProvider {
             case ONE_TRAINEE:
                 id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection)) {
-                    rowsUpdated = sqlDB.update(TraineeTable.TABLE_TRAINEE,
+                    rowsUpdated = sqlDB.update(TraineeTable.TABLE,
                             values,
-                            TraineeTable.COLUMN_ID + "=" + id,
+                            TraineeTable._ID + "=" + id,
                             null);
                 } else {
-                    rowsUpdated = sqlDB.update(TraineeTable.TABLE_TRAINEE,
+                    rowsUpdated = sqlDB.update(TraineeTable.TABLE,
                             values,
-                            TraineeTable.COLUMN_ID + "=" + id
+                            TraineeTable._ID + "=" + id
                                     + " and "
                                     + selection,
                             selectionArgs);
                 }
                 break;
             case ALL_TRAININGS:
-                rowsUpdated = sqlDB.update(TrainingsTable.TABLE_TRAININGS,
+                rowsUpdated = sqlDB.update(TrainingsTable.TABLE,
                         values,
                         selection,
                         selectionArgs);
@@ -211,14 +223,14 @@ public class MyContentProvider extends ContentProvider {
             case ONE_TRAINING:
                 id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection)) {
-                    rowsUpdated = sqlDB.update(TrainingsTable.TABLE_TRAININGS,
+                    rowsUpdated = sqlDB.update(TrainingsTable.TABLE,
                             values,
-                            TraineeTable.COLUMN_ID + "=" + id,
+                            TraineeTable._ID + "=" + id,
                             null);
                 } else {
-                    rowsUpdated = sqlDB.update(TrainingsTable.TABLE_TRAININGS,
+                    rowsUpdated = sqlDB.update(TrainingsTable.TABLE,
                             values,
-                            TraineeTable.COLUMN_ID + "=" + id
+                            TraineeTable._ID + "=" + id
                                     + " and "
                                     + selection,
                             selectionArgs);

@@ -1,7 +1,5 @@
 package com.example.medwed.databasetest;
 
-import android.app.ListActivity;
-import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -10,75 +8,36 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.SparseBooleanArray;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
-
-import com.example.medwed.databasetest.MyContentProvider;
-import com.example.medwed.databasetest.TraineeTable;
 
 
+public class TraineesListActivity extends ParentListActivity {
 
-public class TraineesListActivity extends ListActivity implements
-        LoaderManager.LoaderCallbacks<Cursor> {
-
-    private static final int EDIT_ID = Menu.FIRST + 1;
-    private static final int DELETE_ID = Menu.FIRST + 2;
-    // private Cursor cursor;
-    private SimpleCursorAdapter adapter;
-    public int maxId;
-
-
-    /** Called when the activity is first created. */
+    public int trainingId;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        Bundle extras = getIntent().getExtras();
-        maxId = (extras == null) ? 0 : (int) extras.getInt("MAX_ID");
-
+    public void setGUI() {
         setContentView(R.layout.trainees_list);
         getListView(). setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         getListView().setItemsCanFocus(false);
-        fillData();
-        registerForContextMenu(getListView());
-    }
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            trainingId = extras.getInt(TRAINING_ID);
+            //showCurrentid.setText(String.valueOf(currentId));
+            //trainingUri = extras
+            //        .getParcelable(MyContentProvider.TRAINING_ID);
 
-    // create the menu based on the XML defintion
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.listmenu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case EDIT_ID:
-                Intent i = new Intent(this, TraineeDetailActivity.class);
-                i.putExtra(MyContentProvider.TRAINEE_ID, GetMenuItemUri(item));
-                startActivity(i);
-                return true;
-
-            case DELETE_ID:
-                getContentResolver().delete(GetMenuItemUri(item), null, null);
-                fillData();
-                return true;
+            //fillData(trainingUri);
         }
-        return super.onContextItemSelected(item);
+
     }
 
+    @Override
     public Uri GetMenuItemUri(MenuItem item){
         AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
                 .getMenuInfo();
@@ -92,34 +51,22 @@ public class TraineesListActivity extends ListActivity implements
         startActivity(i);
     }
 
-    public void showTrainings(View v) { //todo add  on click listener tohle je cunarna :)?
-        Intent i = new Intent(this, TrainingListActivity.class);
-        startActivity(i);
-    }
-
-    // Opens the second activity if an entry is clicked
     @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
+    protected void listItemClicked(View v, long id) {
         CheckBox cb = (CheckBox) v.findViewById(R.id.checkbox_select);
         if(cb.isChecked()){
             cb.setChecked(false);
         }
         else{
-            cb.setChecked(true);
+            cb.setChecked(true);// todo error?
         }
-        /*Intent i = new Intent(this, TraineeDetailActivity.class);
-        Uri todoUri = Uri.parse(MyContentProvider.CONTENT_URI + "/" + id);
-        i.putExtra(MyContentProvider.TRAINEE_ID, todoUri);
-
-        startActivity(i);*/ //todo select
     }
-
-    private void fillData() {
+    @Override
+    public void fillData() {
 
         // Fields from the database (projection)
         // Must include the _id column for the adapter to work
-        String[] from = new String[] { TraineeTable.COLUMN_NAME, TraineeTable.COLUMN_SURNAME };
+        String[] from = new String[] { TraineeTable.NAME, TraineeTable.SURNAME};
         // Fields on the UI to which we map
         int[] to = new int[] { R.id.list_name, R.id.list_surname };
 
@@ -131,33 +78,24 @@ public class TraineesListActivity extends ListActivity implements
     }
 
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v,
-                                    ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        menu.add(0, EDIT_ID, 0, getString(R.string.menu_edit));
-        menu.add(0, DELETE_ID, 1, R.string.trainee_delete);
+    public void menuEdit(MenuItem item) {
+        Intent i = new Intent(this, TraineeDetailActivity.class);
+        i.putExtra(MyContentProvider.TRAINEE_ID, GetMenuItemUri(item));
+        startActivity(i);
     }
 
     // creates a new loader after the initLoader () call
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String[] projection = { TraineeTable.COLUMN_ID, TraineeTable.COLUMN_NAME,
-                TraineeTable.COLUMN_SURNAME };
+        String[] projection = { TraineeTable._ID, TraineeTable.NAME,
+                TraineeTable.SURNAME};
+        String order = TraineeTable.NAME + ", " + TraineeTable.SURNAME;
         return new CursorLoader(this,
-                MyContentProvider.TRAINEES_URI, projection, null, null, null);
+                MyContentProvider.TRAINEES_URI, projection, null, null, order);
     }
 
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        adapter.swapCursor(data);
-    }
 
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        // data is not available anymore, delete reference
-        adapter.swapCursor(null);
-    }
-    public double acceptSelect(View V) { //todo add  on click listener tohle je cunarna :)?
+    public void acceptSelect(View V) {
         SparseBooleanArray checked = getListView().getCheckedItemPositions();
         int pos;
         int currentId;
@@ -170,24 +108,15 @@ public class TraineesListActivity extends ListActivity implements
                 writeAttendant(currentId);
             }
         }
-        return 500;
+        finish();
+        return;
     }
-    // todo update...
-    public View getViewByPosition(int pos) {
-        final int firstListItemPosition = getListView().getFirstVisiblePosition();
-        final int lastListItemPosition = firstListItemPosition + getListView().getChildCount() - 1;
 
-        if (pos < firstListItemPosition || pos > lastListItemPosition ) {
-            return getListView().getAdapter().getView(pos, null, getListView());
-        } else {
-            final int childIndex = pos - firstListItemPosition;
-            return getListView().getChildAt(childIndex);
-        }
-    }
+
     public void writeAttendant(int currentId) {
         ContentValues values = new ContentValues();
-        values.put(AttendeesTable.COLUMN_TRAINING_ID, maxId);
-        values.put(AttendeesTable.COLUMN_ATTENDEE_ID, currentId);
+        values.put(AttendeesTable.TRAINING_ID, trainingId);
+        values.put(AttendeesTable.ATTENDEE_ID, currentId);
 
         getContentResolver().insert(MyContentProvider.ATTENDED_URI, values);
 

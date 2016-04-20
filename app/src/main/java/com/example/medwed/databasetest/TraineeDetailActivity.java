@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -56,7 +55,7 @@ public class TraineeDetailActivity extends Activity {
                         TextUtils.isEmpty(editSurName.getText().toString())) {
                     makeToast();
                 } else {
-                    //saveState();
+                    saveData();
                     setResult(RESULT_OK);
                     finish();
                 }
@@ -66,22 +65,22 @@ public class TraineeDetailActivity extends Activity {
     }
 
     private void fillData(Uri uri) {
-        String[] projection = { TraineeTable.COLUMN_NAME,
-                TraineeTable.COLUMN_SURNAME, TraineeTable.COLUMN_BIRTHDAY,
-                TraineeTable.COLUMN_WEIGHT  };
+        String[] projection = { TraineeTable.NAME,
+                TraineeTable.SURNAME, TraineeTable.BIRTHDAY,
+                TraineeTable.WEIGHT};
         Cursor cursor = getContentResolver().query(uri, projection, null, null,
                 null);
         if (cursor != null) {
             cursor.moveToFirst();
 
             editName.setText(cursor.getString(cursor
-                    .getColumnIndexOrThrow(TraineeTable.COLUMN_NAME)));
+                    .getColumnIndexOrThrow(TraineeTable.NAME)));
             editSurName.setText(cursor.getString(cursor
-                    .getColumnIndexOrThrow(TraineeTable.COLUMN_SURNAME)));
+                    .getColumnIndexOrThrow(TraineeTable.SURNAME)));
             editBirthDay.setText(cursor.getString(cursor
-                    .getColumnIndexOrThrow(TraineeTable.COLUMN_BIRTHDAY)));
+                    .getColumnIndexOrThrow(TraineeTable.BIRTHDAY)));
             editWeight.setText(cursor.getString(cursor
-                    .getColumnIndexOrThrow(TraineeTable.COLUMN_WEIGHT)));
+                    .getColumnIndexOrThrow(TraineeTable.WEIGHT)));
 
             // always close the cursor
             cursor.close();
@@ -91,50 +90,47 @@ public class TraineeDetailActivity extends Activity {
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        saveState();
+        // todo saveState();
         outState.putParcelable(MyContentProvider.TRAINEE_ID, traineeUri);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        saveState();
     }
 
-    private void saveState() {
+    private void saveData() {
         String name = editName.getText().toString();
         String surName = editSurName.getText().toString();
         String birthDay = editBirthDay.getText().toString();
         String weight = editWeight.getText().toString();
-        // only save if either summary or description
-        // is available
 
         if (name.length() == 0 && surName.length() == 0) {
             return;
         }
 
         ContentValues values = new ContentValues();
-        values.put(TraineeTable.COLUMN_NAME, name);
-        values.put(TraineeTable.COLUMN_SURNAME, surName);
+        values.put(TraineeTable.NAME, name);
+        values.put(TraineeTable.SURNAME, surName);
         if (birthDay.length() > 0) {
-            values.put(TraineeTable.COLUMN_BIRTHDAY, birthDay);
+            values.put(TraineeTable.BIRTHDAY, birthDay);
         }
         else {
-            values.put(TraineeTable.COLUMN_BIRTHDAY, " ");
+            values.put(TraineeTable.BIRTHDAY, " ");
         }
         if (weight.length() > 0) {
-            values.put(TraineeTable.COLUMN_WEIGHT, weight);
+            values.put(TraineeTable.WEIGHT, weight);
         }
         else {
-            values.put(TraineeTable.COLUMN_WEIGHT, weight);
+            values.put(TraineeTable.WEIGHT, 0);
         }
-
         if (traineeUri == null) {
             // New trainee
-            new AsyncInsert().execute(values);
+            AsyncDBfunctions.asyncInsert(getContentResolver(), getUriInsert(), values);
+            //new AsyncInsert().execute(values);
         } else {
             // Update trainee
-            new AsyncUpdate().execute(values);
+            AsyncDBfunctions.asyncUpdate(getContentResolver(), getUriUpdate(), values);
         }
     }
 
@@ -142,22 +138,13 @@ public class TraineeDetailActivity extends Activity {
         Toast.makeText(TraineeDetailActivity.this, "Please maintain a summary",
                 Toast.LENGTH_LONG).show();
     }
-    private class AsyncInsert extends AsyncTask<ContentValues, Void, Void> {
 
-        @Override
-        protected Void doInBackground(ContentValues... values) {
-
-            traineeUri = getContentResolver().insert(MyContentProvider.TRAINEES_URI, values[0]);
-            return null;
-        }
+    private Uri getUriUpdate() {
+        return this.traineeUri;
     }
-    private class AsyncUpdate extends AsyncTask<ContentValues, Void, Void> {
 
-        @Override
-        protected Void doInBackground(ContentValues... values) {
-
-            getContentResolver().update(traineeUri, values[0], null, null);
-            return null;
-        }
+    private Uri getUriInsert() {
+        return MyContentProvider.TRAINEES_URI;
     }
+
 }

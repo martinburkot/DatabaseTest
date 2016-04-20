@@ -12,14 +12,14 @@ public class AttendedSQLView {
     private static final String DATABASE_CREATE = "create view "
             + VIEV_ATTENDED
             + " as select "
-            + TraineeTable.TABLE_TRAINEE + "." + TraineeTable.COLUMN_ID + ", "
-            + TraineeTable.TABLE_TRAINEE + "." + TraineeTable.COLUMN_NAME + ", "
-            + TraineeTable.TABLE_TRAINEE + "." + TraineeTable.COLUMN_SURNAME + ", "
-            + AttendeesTable.TABLE_ATTENDEES + "." + AttendeesTable.COLUMN_TRAINING_ID +" "
-            + "from " + TraineeTable.TABLE_TRAINEE + " left join "
-            + AttendeesTable.TABLE_ATTENDEES + " on "
-            + TraineeTable.TABLE_TRAINEE + "." + TraineeTable.COLUMN_ID + " = "
-            + AttendeesTable.TABLE_ATTENDEES + "." + AttendeesTable.COLUMN_ATTENDEE_ID;
+            + TraineeTable.TABLE + "." + TraineeTable._ID + ", "
+            + TraineeTable.TABLE + "." + TraineeTable.NAME + ", "
+            + TraineeTable.TABLE + "." + TraineeTable.SURNAME + ", "
+            + AttendeesTable.TABLE + "." + AttendeesTable.TRAINING_ID +" "
+            + "from " + TraineeTable.TABLE + " left join "
+            + AttendeesTable.TABLE + " on "
+            + TraineeTable.TABLE + "." + TraineeTable._ID + " = "
+            + AttendeesTable.TABLE + "." + AttendeesTable.ATTENDEE_ID;
 
     public static void onCreate(SQLiteDatabase database) {
         database.execSQL(DATABASE_CREATE);

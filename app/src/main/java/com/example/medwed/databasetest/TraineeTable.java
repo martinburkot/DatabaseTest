@@ -5,26 +5,26 @@ import android.util.Log;
 public class TraineeTable {
     // Database table
     // todo implement interface for id...
-    public static final String TABLE_TRAINEE = "trainees";
-    public static final String COLUMN_ID = "_id";
-    public static final String COLUMN_NAME = "name";
-    public static final String COLUMN_SURNAME = "surname";
-    public static final String COLUMN_BIRTHDAY = "birthday";
-    public static final String COLUMN_WEIGHT = "weight";
+    public static final String TABLE = "trainees";
+    public static final String _ID = "_id";
+    public static final String NAME = "name";
+    public static final String SURNAME = "surname";
+    public static final String BIRTHDAY = "birthday";
+    public static final String WEIGHT = "weight";
 
     // Database creation SQL statement
-    private static final String DATABASE_CREATE = "create table "
-            + TABLE_TRAINEE
+    private static final String CREATE = "create table "
+            + TABLE
             + "("
-            + COLUMN_ID + " integer primary key autoincrement, "
-            + COLUMN_NAME + " text not null, "
-            + COLUMN_SURNAME + " text not null, "
-            + COLUMN_BIRTHDAY + " text not null, "
-            + COLUMN_WEIGHT + " text not null"
+            + _ID + " integer primary key autoincrement, "
+            + NAME + " text not null, "
+            + SURNAME + " text not null, "
+            + BIRTHDAY + " text not null, "
+            + WEIGHT + " text not null"
             + ");";
 
     public static void onCreate(SQLiteDatabase database) {
-        database.execSQL(DATABASE_CREATE);
+        database.execSQL(CREATE);
     }
 
     public static void onUpgrade(SQLiteDatabase database, int oldVersion,
@@ -33,11 +33,11 @@ public class TraineeTable {
                 + oldVersion + " to " + newVersion
                 + ", which will destroy all old data");
         database.execSQL("create table traineesbackup ( "
-                + COLUMN_ID + " integer , "
-                + COLUMN_NAME + " text , "
-                + COLUMN_SURNAME + " text , "
-                + COLUMN_BIRTHDAY + " text , "
-                + COLUMN_WEIGHT + " text "
+                + _ID + " integer , "
+                + NAME + " text , "
+                + SURNAME + " text , "
+                + BIRTHDAY + " text , "
+                + WEIGHT + " text "
                 + ");");
         database.execSQL(" insert into traineesbackup "
                 + "select * from trainees ");
