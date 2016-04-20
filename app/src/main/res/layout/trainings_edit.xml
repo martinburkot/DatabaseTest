@@ -3,63 +3,61 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    <EditText
-        android:id="@+id/trainings_max_id"
+
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1">
-    </EditText>
+        android:weightSum="1">
 
-    <EditText
-        android:id="@+id/trainings_edit_date"
+        <Button
+            android:id="@+id/trainings_confirm_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/confirm_button"
+            android:layout_weight="1">
+        </Button>
+
+        <Button
+            android:id="@+id/trainings_add_attendants_button"
+            android:layout_width="208dp"
+            android:layout_height="wrap_content"
+            android:onClick="showAttendees"
+            android:text="@string/add_attendants"
+            android:layout_weight="1" >
+        </Button>
+
+    </LinearLayout>
+
+    <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:hint="@string/trainings_edit_date"
-        android:imeOptions="actionNext" >
-    </EditText>
+        android:id="@+id/trainings_edit_date_button"
+        android:onClick="pickDate" >
+    </Button>
 
     <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="10"
         android:id="@+id/trainings_edit_income"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="top"
-        android:imeOptions="actionNext" >
-    </EditText>
+        android:hint="@string/income_hint" />
 
     <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberSigned"
+        android:ems="10"
         android:id="@+id/trainings_edit_expenses"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="top"
-        android:imeOptions="actionNext" >
-    </EditText>
+        android:hint="@string/expenses_hint" />
 
     <EditText
-        android:id="@+id/trainings_edit_total"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="top"
-        android:imeOptions="actionNext" >
-    </EditText>
+        android:inputType="numberSigned"
+        android:ems="10"
+        android:id="@+id/trainings_edit_total"
+        android:hint="@string/total_hint" />
 
-
-    <Button
-        android:id="@+id/trainings_edit_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/confirm_button" >
-    </Button>
-
-    <Button
-        android:id="@+id/trainings_add_attendants_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="showAttendees"
-        android:text="@string/add_attendants" >
-    </Button>
-
-</LinearLayout> 
+</LinearLayout>
