@@ -127,16 +127,39 @@ public class MyContentProvider extends ContentProvider {
                 newUri = ContentUris.withAppendedId(TRAININGS_URI, id);
                 break;
             case ALL_ATTENDED:
-                id = sqlDB.insert(AttendeesTable.TABLE, null, values);
-                newUri = ContentUris.withAppendedId(ATTENDEE_URI, id);
+                newUri = null;
+                if(!(isAttendee(values, sqlDB))) {
+                    id = sqlDB.insert(AttendeesTable.TABLE, null, values);
+                    newUri = ContentUris.withAppendedId(ATTENDEE_URI, id);
+                }
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
-            //INSERT_ATTENDANT
+
         getContext().getContentResolver().notifyChange(uri, null);
 
         return newUri;
+    }
+
+    private boolean isAttendee(ContentValues values, SQLiteDatabase sqlDB) {
+        int trainingId = 0;
+        int attendeeId = 0;
+        if(values.containsKey(AttendeesTable.TRAINING_ID)){
+            trainingId = (int) values.get(AttendeesTable.TRAINING_ID);
+        }
+        if(values.containsKey(AttendeesTable.ATTENDEE_ID)){
+            attendeeId = (int) values.get(AttendeesTable.ATTENDEE_ID);
+        }
+        String trainingIdString = String.valueOf(trainingId);
+        String attendeeIdString = String.valueOf(attendeeId);
+        Cursor cursor = sqlDB.rawQuery("select 1 from " + AttendeesTable.TABLE +
+                " where " + AttendeesTable.TRAINING_ID + " = " + trainingIdString + " and " +
+                AttendeesTable.ATTENDEE_ID +" = " + attendeeIdString, null);
+
+        boolean exists = (cursor.getCount() > 0);
+        cursor.close();
+        return exists;
     }
 
     @Override
@@ -166,14 +189,23 @@ public class MyContentProvider extends ContentProvider {
             case ONE_TRAINING:
                 id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection)) {
+                    // deletetrainings
                     rowsDeleted = sqlDB.delete(TrainingsTable.TABLE,
                             TrainingsTable._ID + "=" + id,
+                            null);
+                    // delete also attendees
+                    rowsDeleted = sqlDB.delete(AttendeesTable.TABLE,
+                            AttendeesTable.TRAINING_ID + "=" + id,
                             null);
                 } else {
                     rowsDeleted = sqlDB.delete(TrainingsTable.TABLE,
                             TraineeTable._ID + "=" + id
                                     + " and " + selection,
                             selectionArgs);
+                    // delete also attendees
+                    rowsDeleted = sqlDB.delete(AttendeesTable.TABLE,
+                            AttendeesTable.TRAINING_ID + "=" + id,
+                            null);
                 }
                 break;
             default:
@@ -241,6 +273,26 @@ public class MyContentProvider extends ContentProvider {
         }
         getContext().getContentResolver().notifyChange(uri, null);
         return rowsUpdated;
+    }
+    boolean isPresent(ContentValues values){
+        SQLiteDatabase sqlDB = database.getWritableDatabase();
+        int trainingId = 0;
+        int attendeeId = 0;
+        if(values.containsKey(AttendeesTable.TRAINING_ID)){
+            trainingId = (int) values.get(AttendeesTable.TRAINING_ID);
+        }
+        if(values.containsKey(AttendeesTable.ATTENDEE_ID)){
+            attendeeId = (int) values.get(AttendeesTable.ATTENDEE_ID);
+        }
+        String trainingIdString = String.valueOf(trainingId);
+        String attendeeIdString = String.valueOf(attendeeId);
+        Cursor cursor = sqlDB.rawQuery("select 1 from " + AttendeesTable.TABLE +
+                " where " + AttendeesTable.TRAINING_ID + " = " + trainingIdString + " and " +
+                AttendeesTable.ATTENDEE_ID +" = " + attendeeIdString, null);
+
+        boolean exists = (cursor.getCount() > 0);
+        cursor.close();
+        return exists;
     }
 }
 

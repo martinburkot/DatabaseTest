@@ -58,9 +58,9 @@ public class TrainingListActivity extends ParentListActivity {
 
         // Fields from the database (projection)
         // Must include the _id column for the adapter to work
-        String[] from = new String[] { TrainingsTable.DATE, TrainingsTable.TOTAL};
+        String[] from = new String[] { TrainingsTable.DATE, TrainingsTable.TOTAL, TrainingsTable._ID};
         // Fields on the UI to which we map
-        int[] to = new int[] { R.id.trainings_list_date, R.id.trainings_list_total};
+        int[] to = new int[] { R.id.trainings_list_date, R.id.trainings_list_total, R.id.trainings_list_idNum};
 
         getLoaderManager().initLoader(0, null, this);
         adapter = new SimpleCursorAdapter(this, R.layout.trainings_row, null, from,
@@ -88,7 +88,8 @@ public class TrainingListActivity extends ParentListActivity {
         String[] projection = { TrainingsTable._ID, TrainingsTable.DATE,
                 TrainingsTable.TOTAL};
         return new CursorLoader(this,
-                MyContentProvider.TRAININGS_URI, projection, null, null, null);
+                MyContentProvider.TRAININGS_URI, projection, null, null,
+                TrainingsTable._ID + " DESC");
     }
 
 } 

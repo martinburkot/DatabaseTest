@@ -23,11 +23,9 @@ public class AttendedListActivity extends ParentListActivity{
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             trainingId = extras.getInt(TRAINING_ID);
-            //showCurrentid.setText(String.valueOf(currentId));
-            //trainingUri = extras
-            //        .getParcelable(MyContentProvider.TRAINING_ID);
-
-            //fillData(trainingUri);
+         }
+        if (trainingId < 1) {
+            getLoaderManager().initLoader(1, null, this);
         }
 
     }
@@ -44,8 +42,9 @@ public class AttendedListActivity extends ParentListActivity{
         String[] from = new String[]{TraineeTable.NAME, TraineeTable.SURNAME};
         // Fields on the UI to which we map
         int[] to = new int[]{R.id.attendee_list_name, R.id.attendee_list_surname};
-
-        getLoaderManager().initLoader(0, null, this);
+        if (trainingId > 0) {
+            getLoaderManager().initLoader(0, null, this);
+        }
         adapter = new SimpleCursorAdapter(this, R.layout.attendee_row, null, from,
                 to, 0);
 
@@ -70,19 +69,44 @@ public class AttendedListActivity extends ParentListActivity{
     // creates a new loader after the initLoader () call
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String[] projection = { TraineeTable._ID, TraineeTable.NAME,
-                TraineeTable.SURNAME};
-        String selection = AttendeesTable.TRAINING_ID + " = " + String.valueOf(trainingId);
-        return new CursorLoader(this,
-                MyContentProvider.ATTENDED_URI, projection, selection, null, null);
+        if (id == 1){
+            String[] projection = { TrainingsTable.MAX_ID};
+
+            return new CursorLoader(this,
+                    MyContentProvider.TRAININGS_URI, projection, null, null, null);
+        }
+        else {
+            String[] projection = {TraineeTable._ID, TraineeTable.NAME,
+                    TraineeTable.SURNAME};
+            String selection = AttendeesTable.TRAINING_ID + " = " + String.valueOf(trainingId);
+            return new CursorLoader(this,
+                    MyContentProvider.ATTENDED_URI, projection, selection, null, null);
+        }
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (loader.getId() == 0) {
+            adapter.swapCursor(data);
+            if (data.getCount() == 0) {
+                showToAdd(this.getListView());  // todo is this view correct
+            }
+        }
+        else {
+            data.moveToFirst();
+            trainingId = data.getInt(0);
+            data.close();
+            getLoaderManager().initLoader(0, null, this);
+        }
     }
 
     public void showToAdd(View v) {
-        Intent i = new Intent(this, TraineesChecked.class);
+        Intent i = new Intent(this, TraineesListActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(TRAINING_ID, trainingId);
         i.putExtras(bundle);
         startActivity(i); //todo start for result...
+
     }
 
 }

@@ -53,13 +53,7 @@ public class TraineesListActivity extends ParentListActivity {
 
     @Override
     protected void listItemClicked(View v, long id) {
-        CheckBox cb = (CheckBox) v.findViewById(R.id.checkbox_select);
-        if(cb.isChecked()){
-            cb.setChecked(false);
-        }
-        else{
-            cb.setChecked(true);// todo error?
-        }
+
     }
     @Override
     public void fillData() {
@@ -117,9 +111,7 @@ public class TraineesListActivity extends ParentListActivity {
         ContentValues values = new ContentValues();
         values.put(AttendeesTable.TRAINING_ID, trainingId);
         values.put(AttendeesTable.ATTENDEE_ID, currentId);
-
         getContentResolver().insert(MyContentProvider.ATTENDED_URI, values);
-
     }
 
 } 

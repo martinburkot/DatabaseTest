@@ -1,11 +1,8 @@
 package com.example.medwed.databasetest;
 
 import android.app.DialogFragment;
-import android.app.LoaderManager;
 import android.content.ContentValues;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,9 +17,10 @@ import android.widget.Toast;
 import java.util.Calendar;
 
 public class TrainingDetailActivity extends FragmentActivity implements
-        LoaderManager.LoaderCallbacks<Cursor>, DatePickerFragment.MyOnDateSetListener {
+        DatePickerFragment.MyOnDateSetListener {
 
     //private EditText mTitleText;
+
     private EditText editIncome;
     private EditText editExpenses;
     private EditText editTotal;
@@ -62,7 +60,6 @@ public class TrainingDetailActivity extends FragmentActivity implements
             fillData(trainingUri);
         }
         if (currentId < 1) {
-            getLoaderManager().initLoader(0, null, this);
             final Calendar c = Calendar.getInstance();
             int year  = c.get(Calendar.YEAR);
             int month = c.get(Calendar.MONTH);
@@ -77,21 +74,28 @@ public class TrainingDetailActivity extends FragmentActivity implements
 
         confirmButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                if (TextUtils.isEmpty(editDateButton.getText().toString()) ||
-                        TextUtils.isEmpty(editTotal.getText().toString())) {
-                    makeToast();
-                } else {
-                    //saveState();
-                    setResult(RESULT_OK);
-                    finish();
-                }
+                checkInputData();
+
             }
 
         });
 
+
+
     }
 
-    public void showAttendees(View v) { //todo add  on click listener tohle je cunarna :)?
+    private void checkInputData() {
+        if (TextUtils.isEmpty(editDateButton.getText().toString()) ||
+                TextUtils.isEmpty(editTotal.getText().toString())  ||
+                editTotal.getText().toString() == "0") {
+            makeToast();
+        } else {
+            setResult(RESULT_OK);
+            finish();
+        }
+    }
+
+    public void showAttendees(View v) {
         Intent i = new Intent(this, AttendedListActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(TRAINING_ID, currentId);
@@ -154,7 +158,7 @@ public class TrainingDetailActivity extends FragmentActivity implements
         arguments.putInt(DatePickerFragment.
                 MyOnDateSetListener.UPDATE_YEAR, year);
         arguments.putInt(DatePickerFragment.
-                MyOnDateSetListener.UPDATE_MONTH, month -1);
+                MyOnDateSetListener.UPDATE_MONTH, month - 1);
         arguments.putInt(DatePickerFragment.
                 MyOnDateSetListener.UPDATE_DAY, day);
 
@@ -220,7 +224,7 @@ public class TrainingDetailActivity extends FragmentActivity implements
     }
 
     private void makeToast() {
-        Toast.makeText(TrainingDetailActivity.this, getString(R.string.fill_date_waring),
+        Toast.makeText(TrainingDetailActivity.this, getString(R.string.fill_values_waring),
                 Toast.LENGTH_LONG).show();
     }
     @Override
@@ -233,26 +237,9 @@ public class TrainingDetailActivity extends FragmentActivity implements
 
     }
 
-    // creates a new loader after the initLoader () call
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String[] projection = { TrainingsTable.MAX_ID};
-
-        return new CursorLoader(this,
-                MyContentProvider.TRAININGS_URI, projection, null, null, null);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (data.moveToFirst()) {
-            currentId = data.getInt(0) + 1;
-            data.close();
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
+    public void onBackPressed(){
+        checkInputData();
     }
 
 }

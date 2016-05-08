@@ -12,20 +12,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
-import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 
 public class TraineesChecked extends ParentListActivity {
 
     public int trainingId;
-    public static final int ALL_CURSOR = 0;
-
 
     @Override
     public void setGUI() {
         setContentView(R.layout.trainees_list);
-        //getListView(). setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         getListView().setItemsCanFocus(false);
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -67,7 +63,11 @@ public class TraineesChecked extends ParentListActivity {
         // Fields on the UI to which we map
         int[] to = new int[] { R.id.list_name, R.id.list_surname };
 
-        getLoaderManager().initLoader(ALL_CURSOR, null, this);
+        getLoaderManager().initLoader(0, null, this);
+        adapter = new SimpleCursorAdapter(this, R.layout.trainee_row, null, from,
+                to, 0);
+
+        setListAdapter(adapter);
 
 
     }
@@ -82,48 +82,11 @@ public class TraineesChecked extends ParentListActivity {
     // creates a new loader after the initLoader () call
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        if (id == ALL_CURSOR) {
-
-            String[] projection = {TraineeTable._ID, TraineeTable.NAME,
-                    TraineeTable.SURNAME};
-            String order = TraineeTable.NAME + ", " + TraineeTable.SURNAME;
-            return new CursorLoader(this,
-                    MyContentProvider.TRAINEES_URI, projection, null, null, order);
-        }
-        else{
-            String[] projection = { TraineeTable._ID, TraineeTable.NAME,
-                    TraineeTable.SURNAME};
-            String selection = AttendeesTable.TRAINING_ID + " = " + String.valueOf(trainingId);
-            return new CursorLoader(this,
-                    MyContentProvider.ATTENDED_URI, projection, selection, null, null);
-        }
-    }
-
-     public void acceptSelect(View V) {
-        SparseBooleanArray checked = getListView().getCheckedItemPositions();
-        int pos;
-        int currentId;
-        Cursor c = adapter.getCursor();
-        for (int i =0; i < checked.size(); i++){
-            if (checked.valueAt(i) == true) {
-                pos = checked.keyAt(i);
-                c.moveToPosition(pos);
-                currentId = c.getInt(0);
-                writeAttendant(currentId);
-            }
-        }
-        finish();
-        return;
-    }
-
-
-    public void writeAttendant(int currentId) {
-        ContentValues values = new ContentValues();
-        values.put(AttendeesTable.TRAINING_ID, trainingId);
-        values.put(AttendeesTable.ATTENDEE_ID, currentId);
-
-        getContentResolver().insert(MyContentProvider.ATTENDED_URI, values);
-
+        String[] projection = { TraineeTable._ID, TraineeTable.NAME,
+                TraineeTable.SURNAME};
+        String selection = AttendeesTable.TRAINING_ID + " = " + String.valueOf(trainingId);
+        return new CursorLoader(this,
+                MyContentProvider.ATTENDED_URI, projection, selection, null, null);
     }
 
 }
