@@ -1,44 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.medwed.databasetest" >
+    package="com.example.medwed.databasetest">
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@android:style/Theme.Holo">
+        <activity android:name=".TraineesListActivity">
+
+        </activity>
+
         <activity
-            android:name=".TraineesListActivity"
-            android:label="@string/app_name" >
+            android:name=".TraineeDetailActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize">
+
+        </activity>
+
+        <activity
+            android:name=".TrainingListActivity"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
 
-        <activity
-            android:name=".TraineeDetailActivity"
-            android:windowSoftInputMode="stateVisible|adjustResize" >
+        <activity android:name=".TrainingDetailActivity">
+
         </activity>
 
-        <activity
-            android:name=".TrainingListActivity" >
+        <activity android:name=".AttendedListActivity">
+
         </activity>
 
-        <activity
-            android:name=".TrainingDetailActivity" >
-        </activity>
+        <activity android:name=".TraineesChecked">
 
-        <activity
-            android:name=".AttendedListActivity" >
         </activity>
 
         <provider
-                android:name=".MyContentProvider"
-                android:authorities="com.example.medwed.databasetest.contentprovider" >
+            android:name=".MyContentProvider"
+            android:authorities="com.example.medwed.databasetest.contentprovider">
+
         </provider>
 
-</application>
+    </application>
 
 </manifest>
